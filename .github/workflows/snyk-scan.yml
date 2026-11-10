@@ -13,12 +13,16 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js (si tu proyecto lo requiere)
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm' # Habilita el caché oficial de Node para npm
 
-      - name: Instalar dependencias del proyecto
+      - name: Limpiar caché de npm (Solución para EINTEGRITY)
+        run: npm cache clean --force
+
+      - name: Instalar dependencias limpias
         run: npm install
 
       - name: Ejecutar escaneo de vulnerabilidades con Snyk
