@@ -25,9 +25,17 @@ jobs:
       - name: Instalar dependencias limpias
         run: npm install
 
-      - name: Ejecutar escaneo de vulnerabilidades con Snyk
+      - name: Ejecutar escaneo de vulnerabilidades con Snyk (Rompe el build si falla)
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+
+      - name: Subir el reporte al Dashboard web de Snyk
+        uses: snyk/actions/node@master
+        if: always() # Obliga a que este paso se ejecute aunque el escaneo anterior haya fallado
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
